@@ -12,9 +12,17 @@ app.get("/tasks", async (req, res) => {
   });
   console.log(tasks);
   res.json(tasks);
-
   res.render("Danh sách công việc");
 });
+app.get("/tasks/detail/:id", async (req, res) => {
+  const id = req.params.id;
+  const tasks = await Task.findOne({
+    _id: id,
+    deleted: false,
+  });
+
+  res.json(tasks);
+});
 app.listen(port, () => {
-  console.log(`App listen on port ${port}`);
+  console.log(`App listen port ${port}`);
 });
