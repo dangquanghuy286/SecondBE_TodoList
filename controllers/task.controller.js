@@ -1,5 +1,6 @@
 const Task = require("../models/task.model");
 const pagination = require("../helpers/pagination");
+const search = require("../helpers/search");
 // [GET]/api/v1/tasks
 module.exports.index = async (req, res) => {
   // Điều kiện tìm kiếm mặc định: chỉ lấy những task chưa bị xóa
@@ -11,6 +12,11 @@ module.exports.index = async (req, res) => {
   // thì lọc thêm theo trạng thái (ví dụ: pending, completed)
   if (req.query.status) {
     find.status = req.query.status;
+  }
+  // Search
+  let objectSearch = search(req.query);
+  if (req.query.keyword) {
+    find.title = objectSearch.regex;
   }
 
   // Pagination (phân trang)
