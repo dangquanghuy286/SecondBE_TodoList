@@ -120,6 +120,22 @@ module.exports.changeMulti = async (req, res) => {
         });
 
         break;
+      case "delete":
+        await Task.updateMany(
+          {
+            id: { $in: ids },
+          },
+          {
+            deleted: true,
+            deleteDate: new Date(),
+          }
+        );
+        res.json({
+          code: 200,
+          message: "Xóa thành công!",
+        });
+
+        break;
 
       default:
         res.json({
