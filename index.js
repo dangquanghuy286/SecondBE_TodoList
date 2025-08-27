@@ -8,5 +8,5 @@ const routeApiV1 = require("./routes/index.route");
 // Routes Version 1
 routeApiV1(app);
 app.listen(port, () => {
-  console.log(`App listen port ${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
