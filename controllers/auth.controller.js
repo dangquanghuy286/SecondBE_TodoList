@@ -225,3 +225,52 @@ module.exports.checkOTP = async (req, res) => {
     res.json({ code: 500, message: "Lỗi hệ thống" });
   }
 };
+// [POST]/auth/password/reset
+module.exports.resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!email || !newPassword) {
+      return res.json({
+        code: 400,
+        message: "Email và mật khẩu mới là bắt buộc!",
+      });
+    }
+
+    // Kiểm tra độ dài mật khẩu mới
+    if (newPassword.length < 6) {
+      return res.json({
+        code: 400,
+        message: "Mật khẩu mới phải có ít nhất 6 ký tự!",
+      });
+    }
+
+    // Tìm tài khoản
+    const user = await Account.findOne({ email, deleted: false });
+    if (!user) {
+      return res.json({
+        code: 400,
+        message: "Tài khoản không tồn tại!",
+      });
+    }
+
+    // Cập nhật mật khẩu mới (sẽ tự hash nhờ pre("save"))
+    user.password = newPassword;
+    await user.save();
+
+    // Xoá OTP đã dùng
+    await ForgotPassword.deleteOne({ email });
+
+    return res.json({
+      code: 200,
+      message: "Đặt lại mật khẩu thành công!",
+    });
+  } catch (error) {
+    console.error("Lỗi trong resetPassword:", error.message, error.stack);
+    return res.json({
+      code: 500,
+      message: `Lỗi hệ thống: ${error.message}`,
+    });
+  }
+};

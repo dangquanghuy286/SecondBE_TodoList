@@ -7,6 +7,7 @@ const accountSchema = new mongoose.Schema(
     userName: String,
     email: String,
     password: String,
+    newPassword: String,
     phone: String,
     avatar: String,
     roleId: String,
