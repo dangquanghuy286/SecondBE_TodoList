@@ -103,40 +103,48 @@ module.exports.changeStatus = async (req, res) => {
 // [PATCH]/api/v1/tasks/change-multi
 module.exports.changeMulti = async (req, res) => {
   try {
+    // Lấy dữ liệu từ body mà client gửi lên
+    // ids: mảng chứa danh sách id của các task cần cập nhật
+    // key: hành động muốn thay đổi (status hoặc delete)
+    // value: giá trị mới (ví dụ status = "doing")
     const { ids, key, value } = req.body;
+
     switch (key) {
+      // Trường hợp muốn đổi trạng thái của nhiều task
       case "status":
         await Task.updateMany(
           {
-            id: { $in: ids },
+            // tìm tất cả task có id nằm trong mảng ids
+            _id: { $in: ids },
           },
           {
-            status: value,
+            status: value, // gán trạng thái mới
           }
         );
         res.json({
           code: 200,
           message: "Cập nhật trạng thái thành công!",
         });
-
         break;
+
+      // Trường hợp muốn xóa nhiều task
       case "delete":
         await Task.updateMany(
           {
-            id: { $in: ids },
+            _id: { $in: ids },
           },
           {
-            deleted: true,
-            deleteDate: new Date(),
+            deleted: true, // đánh dấu đã xóa
+            deleteDate: new Date(), // lưu thời gian xóa
           }
         );
         res.json({
           code: 200,
           message: "Xóa thành công!",
         });
-
         break;
 
+      // Nếu key truyền lên không hợp lệ
       default:
         res.json({
           code: 400,
@@ -145,12 +153,14 @@ module.exports.changeMulti = async (req, res) => {
         break;
     }
   } catch (error) {
+    // Bắt lỗi nếu có exception xảy ra
     res.json({
       code: 400,
       message: "Không tồn tại!",
     });
   }
 };
+
 // [POST]/api/v1/tasks/create
 module.exports.create = async (req, res) => {
   try {
