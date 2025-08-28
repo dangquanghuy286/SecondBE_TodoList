@@ -186,28 +186,42 @@ module.exports.forgotPassword = async (req, res) => {
 };
 //[POST]/auth/password/otp
 module.exports.checkOTP = async (req, res) => {
-  const email = req.body.email;
-  const otp = req.body.otp;
-  const result = await ForgotPassword.findOne({
-    email: email,
-    otp: otp,
-  });
-  if (!result) {
-    res.json({
-      code: 400,
-      message: "OTP không hợp lệ !",
+  try {
+    const email = req.body.email;
+    const otp = req.body.otp;
+    const result = await ForgotPassword.findOne({
+      email: email,
+      otp: otp,
     });
-    return;
-  }
-  const user = await Account.findOne({
-    email: email,
-  });
+    if (!result) {
+      res.json({
+        code: 400,
+        message: "OTP không hợp lệ !",
+      });
+      return;
+    }
+    const user = await Account.findOne({
+      email: email,
+    });
 
-  const token = user.token;
-  res.cookie("token", token);
-  res.json({
-    code: 200,
-    message: "Xác thực thành công !",
-    token: token,
-  });
+    // Tạo JWT token
+    const token = generateToken({
+      id: user._id,
+      email: user.email,
+    });
+    // Set cookie
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+    res.json({
+      code: 200,
+      message: "Xác thực thành công !",
+      token: token,
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({ code: 500, message: "Lỗi hệ thống" });
+  }
 };
