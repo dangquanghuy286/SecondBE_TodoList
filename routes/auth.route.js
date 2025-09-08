@@ -7,8 +7,8 @@ router.post("/register", controller.register);
 router.post("/login", controller.login);
 router.post("/logout", controller.logout);
 router.get("/profile", requireAuth, controller.profile);
-router.post("/password/forgotPassword", requireAuth, controller.forgotPassword);
-router.post("/password/otp", requireAuth, controller.checkOTP);
-router.post("/password/resetPassword", requireAuth, controller.resetPassword);
+router.post("/password/forgotPassword", controller.forgotPassword);
+router.post("/password/otp", controller.checkOTP);
+router.post("/password/resetPassword", controller.resetPassword);
 
 module.exports = router;
