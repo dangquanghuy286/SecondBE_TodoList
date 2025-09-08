@@ -274,3 +274,30 @@ module.exports.resetPassword = async (req, res) => {
     });
   }
 };
+//[GET]/auth/list
+module.exports.getUser = async (req, res) => {
+  try {
+    const email = req.query.email;
+    const user = await Account.findOne({
+      email: email,
+      deleted: false,
+    }).select("fullName email");
+    if (!user) {
+      return res.json({
+        code: 404,
+        message: "Không tìm thấy người dùng!",
+      });
+    }
+    return res.json({
+      code: 200,
+      message: "Thông tin người dùng",
+      user: user,
+    });
+  } catch (error) {
+    console.error("Lỗi trong getUser:", error.message, error.stack);
+    return res.json({
+      code: 500,
+      message: `Lỗi hệ thống: ${error.message}`,
+    });
+  }
+};

@@ -10,5 +10,6 @@ router.get("/profile", requireAuth, controller.profile);
 router.post("/password/forgotPassword", controller.forgotPassword);
 router.post("/password/otp", controller.checkOTP);
 router.post("/password/resetPassword", controller.resetPassword);
+router.get("/password/resetPassword", controller.getUser);
 
 module.exports = router;
