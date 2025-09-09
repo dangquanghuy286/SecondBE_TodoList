@@ -29,7 +29,7 @@ module.exports.index = async (req, res) => {
   // - currentPage: trang hiện tại
   let objectPagination = pagination(
     {
-      limit: 2, // mặc định mỗi trang có 2 task
+      limit: 10,
       currentPage: 1, // mặc định đang ở trang 1
     },
     req.query, // lấy dữ liệu từ query string (ví dụ: ?page=2&limit=5)
