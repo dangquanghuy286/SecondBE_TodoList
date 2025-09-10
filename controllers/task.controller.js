@@ -227,4 +227,28 @@ module.exports.delete = async (req, res) => {
     });
   }
 };
-//[]
+// [PATCH]/api/v1/tasks/restore/:id
+module.exports.restore = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Task.updateOne(
+      {
+        _id: id,
+        deleted: true, // Chỉ khôi phục task đã bị xóa
+      },
+      {
+        deleted: false,
+        deleteDate: null, // Xóa thời gian xóa
+      }
+    );
+    res.json({
+      code: 200,
+      message: "Khôi phục thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: 400,
+      message: "Khôi phục thất bại!",
+    });
+  }
+};
