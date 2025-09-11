@@ -203,7 +203,7 @@ module.exports.edit = async (req, res) => {
     });
   }
 };
-// [DELETE]/api/v1/tasks/delete/:id
+// [PATCH]/api/v1/tasks/delete/:id
 module.exports.delete = async (req, res) => {
   try {
     const id = req.params.id;
@@ -249,6 +249,35 @@ module.exports.restore = async (req, res) => {
     res.json({
       code: 400,
       message: "Khôi phục thất bại!",
+    });
+  }
+};
+// [DELETE]/api/v1/tasks/delete-permanent/:id
+module.exports.deletePermanently = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Xóa hoàn toàn task có _id tương ứng
+    const result = await Task.deleteOne({
+      _id: id,
+    });
+
+    // Kiểm tra xem có task nào bị xóa hay không
+    if (result.deletedCount === 0) {
+      return res.json({
+        code: 404,
+        message: "Task không tồn tại hoặc đã bị xóa!",
+      });
+    }
+
+    res.json({
+      code: 200,
+      message: "Xóa hoàn toàn thành công!",
+    });
+  } catch (error) {
+    res.json({
+      code: 400,
+      message: "Lỗi khi xóa hoàn toàn task!",
     });
   }
 };

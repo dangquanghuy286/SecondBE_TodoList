@@ -11,5 +11,6 @@ router.patch("/change-multi", taskController.changeMulti);
 router.post("/create", taskController.create);
 router.patch("/edit/:id", taskController.edit);
 router.patch("/delete/:id", taskController.delete);
+router.delete("/delete-permanent/:id", taskController.deletePermanently);
 router.patch("/restore/:id", taskController.restore);
 module.exports = router;
